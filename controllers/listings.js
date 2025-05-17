@@ -9,7 +9,7 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
     //res.render("listings/index.ejs", { allListings });
-    module.exports.index = async (req, res) => {
+    
         try {
             let { category, location } = req.query;
 
@@ -34,7 +34,7 @@ module.exports.index = async (req, res) => {
             console.error("Error fetching listings:", e);
             res.status(500).send("Server Error");
         }
-    };
+    
 
 
 }
