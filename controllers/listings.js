@@ -9,34 +9,32 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
     //res.render("listings/index.ejs", { allListings });
-    try {
-        let { category } = req.query;
-        category = category ? category.toLowerCase() : null;
+    module.exports.index = async (req, res) => {
+        try {
+            let { category, location } = req.query;
 
-        if (!category || category === "all") {
-            const allListings = await Listing.find({});
-            return res.render("listings", { allListings, selectedCategory: "all" });
+            let filter = {};
+
+            if (category && category.toLowerCase() !== "all") {
+                filter.category = category.toLowerCase();
+            }
+
+            if (location) {
+                filter.location = { $regex: new RegExp(location, "i") }; // case-insensitive
+            }
+
+            const allListings = await Listing.find(filter);
+
+            res.render("listings", {
+                allListings,
+                selectedCategory: category || "all",
+                searchLocation: location || ""
+            });
+        } catch (e) {
+            console.error("Error fetching listings:", e);
+            res.status(500).send("Server Error");
         }
-        const allListings = await Listing.find({ category: category });
-
-        res.render("listings", { allListings, selectedCategory: category });
-    } catch (e) {
-        console.error(e);
-        res.status(500).send("Server Error");
-    }
-
-    const searchLocation = req.body.location;
-
-  try {
-    const filteredListings = await Listing.find({
-      location: { $regex: new RegExp(searchLocation, 'i') } // case-insensitive search
-    });
-
-    res.render('listings', {allListings: filteredListings });
-  } catch (err) {
-    console.error('Error fetching listings:', err);
-    res.status(500).send('Server Error');
-  }
+    };
 
 
 }
