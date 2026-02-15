@@ -1,7 +1,7 @@
-if(process.env.NODE_ENV != "production"){
-    require('dotenv').config();
-}
-
+// if(process.env.NODE_ENV != "production"){
+//     require('dotenv').config();
+// }
+require('dotenv').config();
 
 const express = require("express");
 const app = express();
@@ -61,6 +61,7 @@ const store  = MongoStore.create({
     },
     touchAfter:24*3600,
 });
+console.log(process.env.SECRET);
   
 store.on("error",(err)=>{
     console.log("error in mongo session store",err);
